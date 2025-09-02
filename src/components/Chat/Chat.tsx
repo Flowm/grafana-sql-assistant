@@ -6,9 +6,7 @@ import { llm, mcp } from '@grafana/llm';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types';
 import { RenderedToolCall, ChatMessage } from './types';
 
-interface ChatProps {
-  useStream?: boolean;
-}
+interface ChatProps {}
 
 // Helper function to handle tool calls
 async function handleToolCall(
@@ -41,7 +39,7 @@ async function handleToolCall(
   }
 }
 
-export function Chat({ useStream = true }: ChatProps) {
+export function Chat({}: ChatProps) {
   const { client } = mcp.useMCPClient();
 
   // Chat state
@@ -142,37 +140,6 @@ export function Chat({ useStream = true }: ChatProps) {
     }
   };
 
-  const handleNonStreamingChatWithHistory = async (messages: llm.Message[], tools: any[]) => {
-    let response = await llm.chatCompletions({
-      model: llm.Model.BASE,
-      messages,
-      tools: mcp.convertToolsToOpenAI(tools),
-    });
-
-    let functionCalls = response.choices[0].message.tool_calls?.filter((tc) => tc.type === 'function') ?? [];
-
-    while (functionCalls.length > 0) {
-      messages.push(response.choices[0].message);
-      await Promise.all(functionCalls.map((fc) => handleToolCall(fc, client, toolCalls, setToolCalls, messages)));
-
-      response = await llm.chatCompletions({
-        model: llm.Model.LARGE,
-        messages,
-        tools: mcp.convertToolsToOpenAI(tools),
-      });
-      functionCalls = response.choices[0].message.tool_calls?.filter((tc) => tc.type === 'function') ?? [];
-    }
-
-    // Update the assistant message in history
-    setChatHistory((prev) =>
-      prev.map((msg, idx) =>
-        idx === prev.length - 1 && msg.role === 'assistant'
-          ? { ...msg, content: response.choices[0].message.content || '' }
-          : msg
-      )
-    );
-  };
-
   const sendMessage = async () => {
     if (!currentInput.trim() || isGenerating || !toolsData?.enabled) {
       return;
@@ -210,11 +177,7 @@ export function Chat({ useStream = true }: ChatProps) {
     ];
 
     try {
-      if (useStream) {
-        await handleStreamingChatWithHistory(messages, toolsData.tools);
-      } else {
-        await handleNonStreamingChatWithHistory(messages, toolsData.tools);
-      }
+      await handleStreamingChatWithHistory(messages, toolsData.tools);
     } catch (error) {
       console.error('Error in chat completion:', error);
       // Update the assistant message with error
@@ -273,7 +236,14 @@ export function Chat({ useStream = true }: ChatProps) {
         }}
       >
         {chatHistory.length === 0 ? (
-          <div style={{ color: 'var(--text-color-secondary)', fontStyle: 'italic', textAlign: 'center', paddingTop: '20px' }}>
+          <div
+            style={{
+              color: 'var(--text-color-secondary)',
+              fontStyle: 'italic',
+              textAlign: 'center',
+              paddingTop: '20px',
+            }}
+          >
             <h4>Welcome to SQL LLM Copilot!</h4>
             <p>Start a conversation by asking questions about:</p>
             <ul style={{ textAlign: 'left', display: 'inline-block' }}>
@@ -343,7 +313,7 @@ export function Chat({ useStream = true }: ChatProps) {
       {/* Tool calls indicator */}
       {toolCalls.size > 0 && (
         <div style={{ fontSize: '12px', color: 'var(--text-color-secondary)' }}>
-          Active tool calls: {Array.from(toolCalls.values()).filter(tc => tc.running).length}
+          Active tool calls: {Array.from(toolCalls.values()).filter((tc) => tc.running).length}
         </div>
       )}
     </Stack>
