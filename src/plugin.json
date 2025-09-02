@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
   "type": "app",
-  "name": "Sql-Llm-Copilot",
+  "name": "SQL-LLM-Copilot",
   "id": "ot-sqlllmcopilot-app",
   "info": {
     "keywords": ["app"],

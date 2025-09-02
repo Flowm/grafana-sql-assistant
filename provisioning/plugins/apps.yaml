@@ -1,11 +1,15 @@
 apiVersion: 1
 
 apps:
-  - type: 'ot-sqlllmcopilot-app'
+  - type: ot-sqlllmcopilot-app
     org_id: 1
-    org_name: 'ot'
-    disabled: false
+    org_name: ot
+  - type: grafana-llm-app
     jsonData:
-      apiUrl: http://default-url.com
+      enableDevSandbox: true
+      provider: openai
+      openAI:
+        url: https://api.openai.com
+        organizationId: $OPENAI_ORGANIZATION_ID
     secureJsonData:
-      apiKey: secret-key
+      openAIKey: $OPENAI_API_KEY
