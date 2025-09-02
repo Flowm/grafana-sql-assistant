@@ -5,6 +5,8 @@ import { finalize, lastValueFrom, partition, startWith } from 'rxjs';
 import { llm, mcp } from '@grafana/llm';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types';
 import { RenderedToolCall, ChatMessage } from './types';
+import { postgresMCPClient, isPostgresTool } from '../../tools/mcpServer';
+import { browserTestHelpers } from '../../tools/simpleTest';
 
 interface ChatProps {}
 
@@ -24,7 +26,15 @@ async function handleToolCall(
   const args = JSON.parse(f.arguments);
 
   try {
-    const response = await client.callTool({ name: f.name, arguments: args });
+    let response;
+
+    // Check if this is a PostgreSQL tool
+    if (isPostgresTool(f.name)) {
+      response = await postgresMCPClient.callTool({ name: f.name, arguments: args });
+    } else {
+      response = await client.callTool({ name: f.name, arguments: args });
+    }
+
     const toolResult = CallToolResultSchema.parse(response);
     const textContent = toolResult.content
       .filter((c) => c.type === 'text')
@@ -41,6 +51,14 @@ async function handleToolCall(
 
 export function Chat({}: ChatProps) {
   const { client } = mcp.useMCPClient();
+
+  // Make test helpers available globally
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).postgresTest = browserTestHelpers;
+      console.log('🔧 PostgreSQL test helpers loaded! Type "postgresTest.help()" for commands.');
+    }
+  }, []);
 
   // Chat state
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -68,8 +86,15 @@ export function Chat({}: ChatProps) {
     if (!enabled) {
       return { enabled: false, tools: [] };
     }
-    const { tools } = (await client?.listTools()) ?? { tools: [] };
-    return { enabled: true, tools };
+
+    // Get tools from both MCP client and PostgreSQL client
+    const mcpTools = (await client?.listTools()) ?? { tools: [] };
+    const postgresTools = await postgresMCPClient.listTools();
+
+    // Combine tools
+    const allTools = [...mcpTools.tools, ...postgresTools.tools];
+
+    return { enabled: true, tools: allTools };
   }, [client]);
 
   const handleStreamingChatWithHistory = async (messages: llm.Message[], tools: any[]) => {
@@ -170,7 +195,7 @@ export function Chat({}: ChatProps) {
       {
         role: 'system',
         content:
-          'You are a helpful SQL and data analysis assistant with deep knowledge of Grafana, Prometheus, and general observability ecosystem. Help users write SQL queries, analyze data, and understand their metrics.',
+          'You are a helpful SQL and data analysis assistant with deep knowledge of Grafana, Prometheus, PostgreSQL, and the general observability ecosystem. You have access to PostgreSQL database tools that allow you to list tables, describe table schemas, execute SELECT queries, count rows, and get sample data. Help users write SQL queries, analyze data, understand their database structure, and gain insights from their metrics. Always use the available database tools to provide accurate and current information about the database structure and data.',
       },
       ...chatHistory.map((msg) => ({ role: msg.role, content: msg.content })),
       { role: 'user', content: userMessage.content },
@@ -247,8 +272,11 @@ export function Chat({}: ChatProps) {
             <h4>Welcome to SQL LLM Copilot!</h4>
             <p>Start a conversation by asking questions about:</p>
             <ul style={{ textAlign: 'left', display: 'inline-block' }}>
+              <li>Listing database tables</li>
+              <li>Exploring table schemas and structure</li>
               <li>Writing SQL queries</li>
               <li>Analyzing your data</li>
+              <li>Getting sample data from tables</li>
               <li>Grafana dashboards and panels</li>
               <li>Prometheus metrics</li>
               <li>Observability best practices</li>
@@ -300,7 +328,7 @@ export function Chat({}: ChatProps) {
           value={currentInput}
           onChange={(e) => setCurrentInput(e.currentTarget.value)}
           onKeyDown={handleKeyPress}
-          placeholder="Ask me about SQL queries, data analysis, or observability... (Enter to send, Shift+Enter for new line)"
+          placeholder="Ask me to list tables, describe schemas, write SQL queries, analyze data, or help with observability... (Enter to send, Shift+Enter for new line)"
           disabled={isGenerating}
           style={{ flex: 1 }}
           rows={3}
