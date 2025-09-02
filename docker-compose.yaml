@@ -6,3 +6,20 @@ services:
     environment:
       GF_INSTALL_PLUGINS: grafana-llm-app
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      POSTGRES_DB: ${POSTGRES_DB:-grafana_db}
+      POSTGRES_USER: ${POSTGRES_USER:-grafana}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-grafana}
+
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres}:${POSTGRES_VERSION:-15}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-grafana_db}
+      POSTGRES_USER: ${POSTGRES_USER:-grafana}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-grafana}
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
