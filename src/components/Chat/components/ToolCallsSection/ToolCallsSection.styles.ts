@@ -1,5 +1,12 @@
 import { CSSProperties } from 'react';
-import { commonStyles, flexSpaceBetween, noSelect, clickable, textBreak, scrollableContainer } from '../../styles/common.styles';
+import {
+  commonStyles,
+  flexSpaceBetween,
+  noSelect,
+  clickable,
+  textBreak,
+  scrollableContainer,
+} from '../../styles/common.styles';
 
 export const toolCallsCollapsibleContainerStyles: CSSProperties = {
   marginBottom: '8px',
@@ -41,11 +48,25 @@ export const toolCallContainerStyles: CSSProperties = {
 };
 
 export const toolCallHeaderStyles: CSSProperties = {
-  ...flexSpaceBetween,
+  display: 'flex',
+  alignItems: 'center',
   fontWeight: 'bold',
   marginBottom: '3px',
   fontSize: commonStyles.typography.fontSize.extraSmall,
-  gap: '4px',
+  gap: '8px',
+  flexWrap: 'wrap',
+};
+
+export const toolCallInlineDisplayStyles: CSSProperties = {
+  fontFamily: commonStyles.typography.fontFamily.monospace,
+  fontSize: commonStyles.typography.fontSize.extraSmall,
+  color: commonStyles.colors.textPrimary,
+  backgroundColor: commonStyles.colors.backgroundTertiary,
+  padding: '2px 4px',
+  borderRadius: '3px',
+  border: `1px solid ${commonStyles.colors.borderColor}`,
+  wordBreak: 'break-all',
+  overflowWrap: 'break-word',
 };
 
 export const toolCallArgumentsStyles: CSSProperties = {
@@ -69,11 +90,7 @@ export const toolCallErrorStyles: CSSProperties = {
 export const toolCallStatusStyles = (running: boolean, error?: string): CSSProperties => ({
   fontSize: commonStyles.typography.fontSize.small,
   fontWeight: 'normal',
-  color: error
-    ? commonStyles.colors.error
-    : running
-    ? commonStyles.colors.warning
-    : commonStyles.colors.success,
+  color: error ? commonStyles.colors.error : running ? commonStyles.colors.warning : commonStyles.colors.success,
 });
 
 export const toolCallsIndicatorStyles: CSSProperties = {

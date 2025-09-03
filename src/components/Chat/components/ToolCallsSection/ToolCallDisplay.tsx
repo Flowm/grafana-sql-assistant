@@ -2,9 +2,9 @@ import React from 'react';
 import {
   toolCallContainerStyles,
   toolCallHeaderStyles,
-  toolCallArgumentsStyles,
   toolCallErrorStyles,
   toolCallStatusStyles,
+  toolCallInlineDisplayStyles,
 } from './ToolCallsSection.styles';
 
 interface ToolCallDisplayProps {
@@ -18,26 +18,27 @@ interface ToolCallDisplayProps {
 }
 
 export const ToolCallDisplay: React.FC<ToolCallDisplayProps> = ({ toolCall }) => {
-  const formatArguments = (args: string) => {
+  const formatInlineArguments = (args: string) => {
     try {
-      return JSON.stringify(JSON.parse(args), null, 2);
+      const parsed = JSON.parse(args);
+      // Format as compact inline object/parameters
+      return JSON.stringify(parsed);
     } catch {
       return args;
     }
   };
 
+  const inlineDisplay = `${toolCall.name}(${formatInlineArguments(toolCall.arguments)})`;
+
   return (
     <div style={toolCallContainerStyles}>
       <div style={toolCallHeaderStyles}>
-        <span>{toolCall.name}</span>
+        <span style={toolCallInlineDisplayStyles}>{inlineDisplay}</span>
         <span style={toolCallStatusStyles(toolCall.running, toolCall.error)}>
           {toolCall.error ? '✗ Error' : toolCall.running ? '⏳ Running' : '✓ Complete'}
         </span>
       </div>
-      <div style={toolCallArgumentsStyles}>{formatArguments(toolCall.arguments)}</div>
-      {toolCall.error && (
-        <div style={toolCallErrorStyles}>Error: {toolCall.error}</div>
-      )}
+      {toolCall.error && <div style={toolCallErrorStyles}>Error: {toolCall.error}</div>}
     </div>
   );
 };
