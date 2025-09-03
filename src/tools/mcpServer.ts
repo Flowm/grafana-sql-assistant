@@ -1,5 +1,18 @@
-import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import {
+  Tool,
+  CallToolRequest,
+  ListToolsRequest,
+  CallToolResultSchema,
+  ListToolsResult,
+} from '@modelcontextprotocol/sdk/types.js';
+import { RequestOptions } from '@modelcontextprotocol/sdk/shared/protocol.js';
 import { postgresQueryTool } from './postgresQueryTool';
+import { z } from 'zod';
+
+// Type inference from MCP SDK schemas
+type CallToolParams = CallToolRequest['params'];
+type ListToolsParams = ListToolsRequest['params'];
+type CallToolResult = z.infer<typeof CallToolResultSchema>;
 
 // For use in browser environment with the LLM plugin
 export class PostgreSQLMCPClient {
@@ -84,18 +97,32 @@ export class PostgreSQLMCPClient {
     this.tools = PostgreSQLMCPClient.TOOL_DEFINITIONS;
   }
 
+  /**
+   * Check if a tool name is supported by this client
+   */
   isTool(toolName: string): boolean {
     return this.tools.some((tool) => tool.name === toolName);
   }
 
-  listTools() {
+  /**
+   * List available tools - conforming to MCP SDK pattern
+   */
+  async listTools(params?: ListToolsParams, options?: RequestOptions): Promise<ListToolsResult> {
+    // For simplicity, we don't implement pagination in this version
+    // but the interface supports it for future extension
     return {
       tools: this.tools,
+      _meta: {
+        totalCount: this.tools.length,
+      },
     };
   }
 
-  async callTool(request: { name: string; arguments?: any }) {
-    const { name, arguments: args } = request;
+  /**
+   * Call a tool - conforming to MCP SDK pattern
+   */
+  async callTool(params: CallToolParams, options?: RequestOptions): Promise<CallToolResult> {
+    const { name, arguments: args } = params;
 
     try {
       // Route to the appropriate handler method
@@ -103,13 +130,13 @@ export class PostgreSQLMCPClient {
         case 'sql_list_tables':
           return await this.handleListTables(args);
         case 'sql_describe_table':
-          return await this.handleDescribeTable(args);
+          return await this.handleDescribeTable(args as { tableName: string });
         case 'sql_get_table_row_count':
-          return await this.handleGetTableRowCount(args);
+          return await this.handleGetTableRowCount(args as { tableName: string });
         case 'sql_get_sample_data':
-          return await this.handleGetSampleData(args);
+          return await this.handleGetSampleData(args as { tableName: string; limit?: number });
         case 'sql_execute_query':
-          return await this.handleExecuteQuery(args);
+          return await this.handleExecuteQuery(args as { query: string });
         default:
           throw new Error(`Unknown tool: ${name}`);
       }
@@ -128,7 +155,7 @@ export class PostgreSQLMCPClient {
   }
 
   // Handler methods for each tool
-  private async handleListTables(args?: any) {
+  private async handleListTables(args?: any): Promise<CallToolResult> {
     const tables = await postgresQueryTool.listTables();
     return {
       content: [
@@ -140,7 +167,7 @@ export class PostgreSQLMCPClient {
     };
   }
 
-  private async handleDescribeTable(args: { tableName: string }) {
+  private async handleDescribeTable(args: { tableName: string }): Promise<CallToolResult> {
     if (!args || !args.tableName) {
       throw new Error('tableName argument is required');
     }
@@ -167,7 +194,7 @@ export class PostgreSQLMCPClient {
     };
   }
 
-  private async handleGetTableRowCount(args: { tableName: string }) {
+  private async handleGetTableRowCount(args: { tableName: string }): Promise<CallToolResult> {
     if (!args || !args.tableName) {
       throw new Error('tableName argument is required');
     }
@@ -184,7 +211,7 @@ export class PostgreSQLMCPClient {
     };
   }
 
-  private async handleGetSampleData(args: { tableName: string; limit?: number }) {
+  private async handleGetSampleData(args: { tableName: string; limit?: number }): Promise<CallToolResult> {
     if (!args || !args.tableName) {
       throw new Error('tableName argument is required');
     }
@@ -202,7 +229,7 @@ export class PostgreSQLMCPClient {
     };
   }
 
-  private async handleExecuteQuery(args: { query: string }) {
+  private async handleExecuteQuery(args: { query: string }): Promise<CallToolResult> {
     if (!args || !args.query) {
       throw new Error('query argument is required');
     }
