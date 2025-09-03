@@ -64,6 +64,7 @@ export const useChat = () => {
       role: 'assistant',
       content: '',
       timestamp: new Date(),
+      toolCalls: [],
     };
 
     setChatHistory((prev) => [...prev, assistantMessage]);
@@ -100,6 +101,28 @@ export const useChat = () => {
     setChatHistory([]);
     clearToolCalls();
   };
+
+  // Update chat history with tool calls
+  const updateToolCallsInChatHistory = (toolCallsMap: Map<string, any>) => {
+    const toolCallsArray = Array.from(toolCallsMap.values());
+    setChatHistory((prev) =>
+      prev.map((msg, idx) =>
+        idx === prev.length - 1 && msg.role === 'assistant' ? { ...msg, toolCalls: toolCallsArray } : msg
+      )
+    );
+  };
+
+  // Watch for tool calls changes and update chat history
+  useEffect(() => {
+    if (toolCalls.size > 0) {
+      updateToolCallsInChatHistory(toolCalls);
+    } else {
+      // Clear tool calls from the last assistant message when tool calls are cleared
+      setChatHistory((prev) =>
+        prev.map((msg, idx) => (idx === prev.length - 1 && msg.role === 'assistant' ? { ...msg, toolCalls: [] } : msg))
+      );
+    }
+  }, [toolCalls]);
 
   return {
     chatHistory,
