@@ -43,11 +43,7 @@ export function Chat() {
       <ChatHeader clearChat={clearChat} isGenerating={isGenerating} />
 
       <div className="flex-1 flex flex-col min-h-0">
-        <div
-          ref={chatContainerRef}
-          className="flex-1 overflow-y-auto px-4 py-6 theme-scrollbar mb-lg"
-          onScroll={handleScroll}
-        >
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-6 mb-lg" onScroll={handleScroll}>
           {chatHistory.length === 0 ? (
             <WelcomeMessage onSuggestionClick={handleSuggestionClick} />
           ) : (
