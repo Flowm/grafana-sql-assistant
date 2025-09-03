@@ -1,6 +1,8 @@
-# Grafana app plugin template
+# SQL Assistant - Grafana Plugin
 
-This template is a starting point for building an app plugin for Grafana.
+SQL Assistant is an AI-powered Grafana app plugin that helps you write SQL queries for dashboards and panels through natural language conversation. It can access your database to understand the schema and assist with creating and updating dashboards.
+
+For detailed documentation, features, and usage instructions, see the [plugin README](src/README.md).
 
 ## What are Grafana app plugins?
 

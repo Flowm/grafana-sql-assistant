@@ -1,50 +1,74 @@
-<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
-
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
-
 # SQL Assistant
 
-<!-- To help maximize the impact of your README and improve usability for users, we propose the following loose structure:
+## Overview
 
-**BEFORE YOU BEGIN**
-- Ensure all links are absolute URLs so that they will work when the README is displayed within Grafana and Grafana.com
-- Be inspired ✨
-  - [grafana-polystat-panel](https://github.com/grafana/grafana-polystat-panel)
-  - [volkovlabs-variable-panel](https://github.com/volkovlabs/volkovlabs-variable-panel)
+SQL Assistant is a Grafana app plugin that uses AI to help write SQL queries for dashboards and panels.
+Users can chat with it in plain English and it will generate SQL queries based on the request.
 
-**ADD SOME BADGES**
+The plugin can inspect connected PostgreSQL datasources through an MCP interface to understand table structures and relationships.
+It then uses this context to generate relevant SQL queries based on the request.
+Finally it can create and update Grafana dashboards and panels based on the generated queries through the Grafana MCP interface.
 
-Badges convey useful information at a glance for users whether in the Catalog or viewing the source code. You can use the generator on [Shields.io](https://shields.io/badges/dynamic-json-badge) together with the Grafana.com API
-to create dynamic badges that update automatically when you publish a new version to the marketplace.
+## Motivation
 
-- For the URL parameter use `https://grafana.com/api/plugins/your-plugin-id`.
-- Example queries:
-  - Downloads: `$.downloads`
-  - Catalog Version: `$.version`
-  - Grafana Dependency: `$.grafanaDependency`
-  - Signature Type: `$.versionSignatureType`
-- Optionally, for the logo parameter use `grafana`.
+This plugin aims to optimize the time required to write custom SQL queries for complex PostgreSQL databases. LLMs can be a huge help to write and optimize these queries, but to work properly they need information about all relevant tables and associations.
 
-Full example: ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?logo=grafana&query=$.version&url=https://grafana.com/api/plugins/grafana-polystat-panel&label=Marketplace&prefix=v&color=F47A20)
+Grafana recently released Grafana Assistant that goes a great step in this direction, but the initial focus on Grafana Cloud and only Prometheus and Loki datasources doesn't cover many use cases.
 
-Consider other [badges](https://shields.io/badges) as you feel appropriate for your project.
+This plugin should initially be considered a POC and highly experimental, but happy to expand this depending on interest and feedback.
 
-## Overview / Introduction
-Provide one or more paragraphs as an introduction to your plugin to help users understand why they should use it.
+## Features
 
-Consider including screenshots:
-- in [plugin.json](https://grafana.com/developers/plugin-tools/reference/plugin-json#info) include them as relative links.
-- in the README ensure they are absolute URLs.
+- **Natural Language to SQL**: Convert plain English questions into SQL queries
+- **Schema Understanding**: Automatically analyzes the database structure to provide context-aware suggestions
+- **Dashboard Integration**: Seamlessly create and update Grafana dashboard panels
+- **Query Optimization**: Suggests improvements for better performance and accuracy
+- **Conversational Interface**: Chat-based interaction for iterative query refinement
 
 ## Requirements
-List any requirements or dependencies they may need to run the plugin.
+
+- Grafana 10.4.0 or later
+- [Grafana LLM app plugin](https://grafana.com/grafana/plugins/grafana-llm-app/) enabled and configured with one of the supported AI providers (OpenAI, etc.)
+- PostgreSQL datasource (other SQL databases may be supported in the future)
 
 ## Getting Started
-Provide a quick start on how to configure and use the plugin.
 
-## Documentation
-If your project has dedicated documentation available for users, provide links here. For help in following Grafana's style recommendations for technical documentation, refer to our [Writer's Toolkit](https://grafana.com/docs/writers-toolkit/).
+1. **Install the Plugin**: Install SQL Assistant from the Grafana plugin catalog or manually upload the plugin files.
+
+2. **Configure LLM**: Ensure the Grafana LLM plugin is installed and configured with the preferred AI provider (OpenAI, etc.).
+
+3. **Setup Datasource**: Configure the PostgreSQL datasource in Grafana.
+
+4. **Access SQL Assistant**: Navigate to the SQL Assistant app from the Grafana sidebar.
+
+5. **Start Querying**: Begin a conversation by asking questions like:
+   - "Show me all available tables"
+   - "Create a query to monitor user activity over the last 24 hours"
+   - "Help me build a dashboard for system performance metrics"
+
+## Use Cases
+
+- **Monitoring & Observability**: Create queries for system metrics, application performance, and infrastructure monitoring
+- **Data Analysis**: Explore data patterns and trends through conversational queries
+- **Dashboard Creation**: Build comprehensive dashboards with AI-assisted query generation
+- **Query Optimization**: Improve existing queries for better performance
+- **Schema Exploration**: Understand database structure and relationships
+
+## Example Conversations
+
+**User**: "What tables are available in the database?"
+**Assistant**: *Executes schema query and lists all tables with descriptions*
+
+**User**: "Create a query to show CPU usage over time"
+**Assistant**: *Generates optimized time-series query for CPU metrics*
+
+**User**: "Help me build a dashboard panel for error rates"
+**Assistant**: *Creates query and provides dashboard panel configuration*
 
 ## Contributing
-Do you want folks to contribute to the plugin or provide feedback through specific means? If so, tell them how!
--->
+
+Contributions are welcome! Please submit issues, feature requests, or pull requests to help improve SQL Assistant.
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
