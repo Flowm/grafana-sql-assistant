@@ -6,7 +6,6 @@ import { llm, mcp } from '@grafana/llm';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types';
 import { RenderedToolCall, ChatMessage } from './types';
 import { postgresMCPClient } from '../../tools/mcpServer';
-import { browserTestHelpers } from '../../tools/simpleTest';
 
 interface ChatProps {}
 
@@ -51,14 +50,6 @@ async function handleToolCall(
 
 export function Chat({}: ChatProps) {
   const { client } = mcp.useMCPClient();
-
-  // Make test helpers available globally
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      (window as any).postgresTest = browserTestHelpers;
-      console.log('🔧 PostgreSQL test helpers loaded! Type "postgresTest.help()" for commands.');
-    }
-  }, []);
 
   // Chat state
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
