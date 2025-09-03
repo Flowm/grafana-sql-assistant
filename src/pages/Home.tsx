@@ -16,7 +16,7 @@ function Home() {
               </div>
             }
           >
-            <mcp.MCPClientProvider appName="SQL LLM Copilot" appVersion="1.0.0">
+            <mcp.MCPClientProvider appName="SQL Assistant" appVersion="1.0.0">
               <Chat />
             </mcp.MCPClientProvider>
           </Suspense>

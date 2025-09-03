@@ -1,13 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
   "type": "app",
-  "name": "SQL-LLM-Copilot",
-  "id": "ot-sqlllmcopilot-app",
+  "name": "SQL Assistant",
+  "id": "frcy-sqlassistant-app",
   "info": {
     "keywords": ["app", "sql", "llm", "ai", "copilot", "assistant", "query", "database", "observability"],
     "description": "AI-powered SQL assistant that helps you write queries, analyze data, and gain observability insights using LLM technology.",
     "author": {
-      "name": "Ot"
+      "name": "Florian Mauracher"
     },
     "logos": {
       "small": "img/logo.svg",
@@ -20,7 +20,7 @@
   "includes": [
     {
       "type": "page",
-      "name": "SQL LLM Copilot",
+      "name": "SQL Assistant",
       "path": "/a/%PLUGIN_ID%",
       "addToNav": true,
       "defaultNav": true

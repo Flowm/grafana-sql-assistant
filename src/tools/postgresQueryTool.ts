@@ -96,7 +96,7 @@ export class PostgreSQLQueryTool {
         intervalMs: 60000,
         scopedVars: {},
         timezone: 'browser',
-        app: 'sql-llm-copilot',
+        app: 'sql-assistant',
         startTime: Date.now(),
         targets: [
           {
