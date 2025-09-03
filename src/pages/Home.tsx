@@ -7,18 +7,20 @@ import { Chat } from '../components/Chat';
 function Home() {
   return (
     <PluginPage>
-      <div data-testid={testIds.home.container} className="p-md">
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center p-xl">
-              <div className="text-lg text-secondary">Loading MCP...</div>
-            </div>
-          }
-        >
-          <mcp.MCPClientProvider appName="SQL LLM Copilot" appVersion="1.0.0">
-            <Chat />
-          </mcp.MCPClientProvider>
-        </Suspense>
+      <div data-testid={testIds.home.container} className="h-full flex flex-col p-md">
+        <div className="flex-1 flex flex-col min-h-0">
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center flex-1">
+                <div className="text-lg text-secondary">Loading MCP...</div>
+              </div>
+            }
+          >
+            <mcp.MCPClientProvider appName="SQL LLM Copilot" appVersion="1.0.0">
+              <Chat />
+            </mcp.MCPClientProvider>
+          </Suspense>
+        </div>
       </div>
     </PluginPage>
   );

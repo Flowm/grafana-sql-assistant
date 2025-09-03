@@ -32,24 +32,28 @@ export const ToolCallsSection: React.FC<ToolCallsSectionProps> = ({ toolCalls })
   }
 
   return (
-    <div className="mb-sm border border-medium rounded-md bg-surface">
+    <div className="rounded-lg border border-weak bg-background overflow-hidden mb-4">
       <div
-        className={`flex justify-between items-center select-none cursor-pointer p-md bg-background border-b border-medium text-sm font-bold transition-colors duration-200 rounded-t-md ${
-          isHovered ? 'bg-surface' : ''
+        className={`flex justify-between items-center select-none cursor-pointer px-4 py-3 bg-surface text-sm font-medium transition-all duration-200 ${
+          isHovered ? 'bg-background' : ''
         }`}
         onClick={() => setIsExpanded(!isExpanded)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <span>
-          🔧 Tool Calls ({toolCalls.length}){runningCount > 0 && ` • ${runningCount} running`}
-          {completedCount > 0 && ` • ${completedCount} completed`}
-          {errorCount > 0 && ` • ${errorCount} failed`}
-        </span>
-        <span>{isExpanded ? '▼' : '▶'}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-primary">🔧</span>
+          <span className="text-secondary">
+            Tool Calls ({toolCalls.length})
+            {runningCount > 0 && <span className="text-warning ml-1">• {runningCount} running</span>}
+            {completedCount > 0 && <span className="text-success ml-1">• {completedCount} completed</span>}
+            {errorCount > 0 && <span className="text-error ml-1">• {errorCount} failed</span>}
+          </span>
+        </div>
+        <span className="text-secondary">{isExpanded ? '▼' : '▶'}</span>
       </div>
       {isExpanded && (
-        <div className="p-md">
+        <div className="p-3 border-t border-weak bg-background">
           {toolCalls.map((toolCall, index) => (
             <ToolCallDisplay key={index} toolCall={toolCall} />
           ))}

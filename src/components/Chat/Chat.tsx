@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { useChat } from './hooks/useChat';
 import { ChatHeader, ChatHistory, ChatInput, WelcomeMessage } from './components';
+import { ChatInputRef } from './components/ChatInput/ChatInput';
 
 export function Chat() {
   const {
@@ -19,6 +20,16 @@ export function Chat() {
     handleScroll,
   } = useChat();
 
+  const chatInputRef = useRef<ChatInputRef>(null);
+
+  const handleSuggestionClick = (message: string) => {
+    setCurrentInput(message);
+    // Focus the input after setting the message
+    setTimeout(() => {
+      chatInputRef.current?.focus();
+    }, 100);
+  };
+
   if (toolsError) {
     return <div>Error: {toolsError.message}</div>;
   }
@@ -28,27 +39,34 @@ export function Chat() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto h-full flex flex-col">
       <ChatHeader clearChat={clearChat} isGenerating={isGenerating} />
-      <div
-        ref={chatContainerRef}
-        className="overflow-y-auto h-[500px] border border-medium rounded-md p-md bg-surface theme-scrollbar mb-md"
-        onScroll={handleScroll}
-      >
-        {chatHistory.length === 0 ? (
-          <WelcomeMessage />
-        ) : (
-          <ChatHistory chatHistory={chatHistory} isGenerating={isGenerating} />
-        )}
+
+      <div className="flex-1 flex flex-col min-h-0">
+        <div
+          ref={chatContainerRef}
+          className="flex-1 overflow-y-auto px-4 py-6 theme-scrollbar mb-lg"
+          onScroll={handleScroll}
+        >
+          {chatHistory.length === 0 ? (
+            <WelcomeMessage onSuggestionClick={handleSuggestionClick} />
+          ) : (
+            <ChatHistory chatHistory={chatHistory} isGenerating={isGenerating} />
+          )}
+        </div>
+
+        <div className="flex-shrink-0">
+          <ChatInput
+            ref={chatInputRef}
+            currentInput={currentInput}
+            isGenerating={isGenerating}
+            toolsLoading={toolsLoading}
+            setCurrentInput={setCurrentInput}
+            sendMessage={sendMessage}
+            handleKeyPress={handleKeyPress}
+          />
+        </div>
       </div>
-      <ChatInput
-        currentInput={currentInput}
-        isGenerating={isGenerating}
-        toolsLoading={toolsLoading}
-        setCurrentInput={setCurrentInput}
-        sendMessage={sendMessage}
-        handleKeyPress={handleKeyPress}
-      />
     </div>
   );
 }

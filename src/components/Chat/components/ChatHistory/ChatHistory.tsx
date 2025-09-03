@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stack } from '@grafana/ui';
+
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessage as ChatMessageType } from '../../types';
 
@@ -9,7 +9,7 @@ interface ChatHistoryProps {
 }
 
 export const ChatHistory: React.FC<ChatHistoryProps> = ({ chatHistory, isGenerating }) => (
-  <Stack direction="column" gap={1}>
+  <div>
     {chatHistory.map((message, index) => (
       <ChatMessage
         key={index}
@@ -18,5 +18,5 @@ export const ChatHistory: React.FC<ChatHistoryProps> = ({ chatHistory, isGenerat
         isLastMessage={index === chatHistory.length - 1}
       />
     ))}
-  </Stack>
+  </div>
 );
