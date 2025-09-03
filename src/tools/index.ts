@@ -1,2 +1,2 @@
 export { PostgreSQLQueryTool, postgresQueryTool } from './postgresQueryTool';
-export { PostgreSQLMCPClient, postgresMCPClient } from './mcpServer';
+export { SQLMCPClient, sqlMCPClient } from './sqlMCPServer';

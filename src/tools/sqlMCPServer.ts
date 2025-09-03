@@ -15,7 +15,7 @@ type ListToolsParams = ListToolsRequest['params'];
 type CallToolResult = z.infer<typeof CallToolResultSchema>;
 
 // For use in browser environment with the LLM plugin
-export class PostgreSQLMCPClient {
+export class SQLMCPClient {
   private tools: Tool[];
 
   // Static tool definitions
@@ -94,7 +94,7 @@ export class PostgreSQLMCPClient {
   ];
 
   constructor() {
-    this.tools = PostgreSQLMCPClient.TOOL_DEFINITIONS;
+    this.tools = SQLMCPClient.TOOL_DEFINITIONS;
   }
 
   /**
@@ -248,4 +248,4 @@ export class PostgreSQLMCPClient {
 }
 
 // Export singleton instance for use in the plugin
-export const postgresMCPClient = new PostgreSQLMCPClient();
+export const sqlMCPClient = new SQLMCPClient();
