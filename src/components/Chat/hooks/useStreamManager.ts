@@ -1,6 +1,6 @@
 import { llm } from '@grafana/llm';
 import { partition, lastValueFrom, finalize, startWith } from 'rxjs';
-import { ChatMessage } from './types';
+import { ChatMessage } from '../types';
 
 export const useStreamManager = (
   setChatHistory: React.Dispatch<React.SetStateAction<ChatMessage[]>>,

@@ -2,18 +2,9 @@ import { useState, useCallback } from 'react';
 import { useAsync } from 'react-use';
 import { llm, mcp } from '@grafana/llm';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types';
-import { sqlMCPClient } from '../../tools/sqlMCPServer';
-import { RenderedToolCall } from './types';
-
-const ALLOWED_GRAFANA_TOOLS = [
-  'search_dashboards',
-  'get_dashboard_by_uid',
-  'update_dashboard',
-  'get_dashboard_panel_queries',
-  'list_datasources',
-  'get_datasource_by_uid',
-  'get_datasource_by_name',
-];
+import { sqlMCPClient } from '../../../tools/sqlMCPServer';
+import { RenderedToolCall } from '../types';
+import { ALLOWED_GRAFANA_TOOLS } from '../constants';
 
 export const useMCPManager = () => {
   const { client: grafanaMCPClient } = mcp.useMCPClient();

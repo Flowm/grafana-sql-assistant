@@ -1,23 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { llm } from '@grafana/llm';
-import { ChatMessage } from './types';
+import { ChatMessage } from '../types';
 import { useMCPManager } from './useMCPManager';
 import { useStreamManager } from './useStreamManager';
-
-const SYSTEM_PROMPT = `
-You are a helpful SQL and data analysis assistant with deep knowledge of Grafana, Prometheus, PostgreSQL, and the general observability ecosystem.
-
-You have access to PostgreSQL database tools that allow you to:
-- List tables
-- Describe table schemas
-- Execute SELECT queries
-- Count rows
-- Get sample data
-
-Help users write SQL queries, analyze data, understand their database structure, and gain insights from their metrics.
-
-Always use the available database tools to provide accurate and current information about the database structure and data.
-`;
+import { SYSTEM_PROMPT } from '../constants';
 
 export const useChat = () => {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
