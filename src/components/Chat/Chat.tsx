@@ -32,7 +32,7 @@ export function Chat() {
       <ChatHeader clearChat={clearChat} isGenerating={isGenerating} />
       <div
         ref={chatContainerRef}
-        className="overflow-y-auto h-[500px] border border-gray-300 rounded-lg p-4 bg-gray-50"
+        className="overflow-y-auto h-[500px] border border-medium rounded-md p-md bg-surface theme-scrollbar"
         onScroll={handleScroll}
       >
         {chatHistory.length === 0 ? (

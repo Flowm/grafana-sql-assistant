@@ -14,8 +14,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isGenerating 
 
   const messageClasses =
     message.role === 'user'
-      ? 'max-w-[90%] p-4 rounded-xl bg-blue-600 text-white whitespace-pre-wrap break-words shadow-lg text-sm leading-relaxed'
-      : 'max-w-[90%] p-4 rounded-xl bg-white text-gray-900 whitespace-pre-wrap break-words shadow-lg border border-gray-200 text-sm leading-relaxed';
+      ? 'max-w-[90%] p-md rounded-lg chat-message-user whitespace-pre-wrap break-words shadow-grafana-md text-sm leading-relaxed'
+      : 'max-w-[90%] p-md rounded-lg chat-message-assistant whitespace-pre-wrap break-words shadow-grafana-md border text-sm leading-relaxed';
 
   return (
     <div className={`flex flex-row mb-3 w-full ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -24,9 +24,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isGenerating 
           <ToolCallsSection toolCalls={message.toolCalls} />
         )}
         {showThinking ? (
-          <span className="opacity-70 italic text-gray-600">Thinking...</span>
+          <span className="opacity-70 italic text-secondary">Thinking...</span>
         ) : (
-          <div className="text-sm leading-relaxed text-gray-900 whitespace-normal break-words overflow-x-auto">
+          <div className="text-sm leading-relaxed text-primary whitespace-normal break-words overflow-x-auto">
             <Streamdown>{message.content}</Streamdown>
           </div>
         )}

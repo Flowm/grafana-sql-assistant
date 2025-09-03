@@ -32,10 +32,10 @@ export const ToolCallsSection: React.FC<ToolCallsSectionProps> = ({ toolCalls })
   }
 
   return (
-    <div className="mb-2 border border-gray-300 rounded-md bg-gray-100">
+    <div className="mb-sm border border-medium rounded-md bg-surface">
       <div
-        className={`flex justify-between items-center select-none cursor-pointer p-3 bg-gray-200 border-b border-gray-300 text-sm font-bold transition-colors duration-200 rounded-t-md ${
-          isHovered ? 'bg-gray-100' : ''
+        className={`flex justify-between items-center select-none cursor-pointer p-md bg-background border-b border-medium text-sm font-bold transition-colors duration-200 rounded-t-md ${
+          isHovered ? 'bg-surface' : ''
         }`}
         onClick={() => setIsExpanded(!isExpanded)}
         onMouseEnter={() => setIsHovered(true)}
@@ -49,7 +49,7 @@ export const ToolCallsSection: React.FC<ToolCallsSectionProps> = ({ toolCalls })
         <span>{isExpanded ? '▼' : '▶'}</span>
       </div>
       {isExpanded && (
-        <div className="p-3">
+        <div className="p-md">
           {toolCalls.map((toolCall, index) => (
             <ToolCallDisplay key={index} toolCall={toolCall} />
           ))}
