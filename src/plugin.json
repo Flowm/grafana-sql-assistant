@@ -4,8 +4,8 @@
   "name": "SQL Assistant",
   "id": "frcy-sqlassistant-app",
   "info": {
-    "keywords": ["app", "sql", "llm", "ai", "copilot", "assistant", "query", "database", "observability"],
-    "description": "AI-powered SQL assistant that helps you write queries, analyze data, and gain observability insights using LLM technology.",
+    "keywords": ["app", "sql", "assistant", "ai", "llm", "mcp", "chat", "query", "database", "postgres", "dashboard"],
+    "description": "Conversational SQL assistant that supports in writing of SQL queries and integrates with Grafana dashboards.",
     "author": {
       "name": "Florian Mauracher"
     },
@@ -35,7 +35,13 @@
     }
   ],
   "dependencies": {
-    "grafanaDependency": ">=10.4.0",
-    "plugins": []
+    "grafanaDependency": ">=12.1.1",
+    "plugins": [
+      {
+        "type": "app",
+        "id": "grafana-llm-app",
+        "name": "LLM"
+      }
+    ]
   }
 }
