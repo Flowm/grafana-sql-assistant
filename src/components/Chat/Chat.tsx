@@ -12,7 +12,7 @@ interface ChatProps {}
 // Helper function to handle tool calls
 async function handleToolCall(
   fc: { function: { name: string; arguments: string }; id: string },
-  client: any,
+  grafanaMCPClient: any,
   toolCalls: Map<string, RenderedToolCall>,
   setToolCalls: (calls: Map<string, RenderedToolCall>) => void,
   messages: llm.Message[]
@@ -31,7 +31,7 @@ async function handleToolCall(
     if (sqlMCPClient.isTool(f.name)) {
       response = await sqlMCPClient.callTool({ name: f.name, arguments: args });
     } else {
-      response = await client.callTool({ name: f.name, arguments: args });
+      response = await grafanaMCPClient.callTool({ name: f.name, arguments: args });
     }
 
     const toolResult = CallToolResultSchema.parse(response);
@@ -49,7 +49,7 @@ async function handleToolCall(
 }
 
 export function Chat({}: ChatProps) {
-  const { client } = mcp.useMCPClient();
+  const { client: grafanaMCPClient } = mcp.useMCPClient();
 
   // Chat state
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -78,15 +78,24 @@ export function Chat({}: ChatProps) {
       return { enabled: false, tools: [] };
     }
 
-    // Get tools from both MCP client and SQL client
-    const mcpTools = (await client?.listTools()) ?? { tools: [] };
+    // Define allowed Grafana tools
+    const ALLOWED_GRAFANA_TOOLS = [
+      'search_dashboards',
+      'get_dashboard_by_uid',
+      'update_dashboard',
+      'get_dashboard_panel_queries',
+      'list_datasources',
+      'get_datasource_by_uid',
+      'get_datasource_by_name',
+    ];
+    // Get tools from both Grafana MCP client and SQL MCP client
+    const grafanaTools = (await grafanaMCPClient?.listTools()) ?? { tools: [] };
+    const filteredGrafanaTools = grafanaTools.tools.filter((tool) => ALLOWED_GRAFANA_TOOLS.includes(tool.name));
     const sqlTools = await sqlMCPClient.listTools();
-
-    // Combine tools
-    const allTools = [...mcpTools.tools, ...sqlTools.tools];
+    const allTools = [...filteredGrafanaTools, ...sqlTools.tools];
 
     return { enabled: true, tools: allTools };
-  }, [client]);
+  }, [grafanaMCPClient]);
 
   const handleStreamingChatWithHistory = async (messages: llm.Message[], tools: any[]) => {
     let stream = llm.streamChatCompletions({
@@ -120,7 +129,7 @@ export function Chat({}: ChatProps) {
       messages.push(toolCallMessages);
 
       const tcs = toolCallMessages.tool_calls.filter((tc) => tc.type === 'function');
-      await Promise.all(tcs.map((fc) => handleToolCall(fc, client, toolCalls, setToolCalls, messages)));
+      await Promise.all(tcs.map((fc) => handleToolCall(fc, grafanaMCPClient, toolCalls, setToolCalls, messages)));
 
       stream = llm.streamChatCompletions({
         model: llm.Model.LARGE,
