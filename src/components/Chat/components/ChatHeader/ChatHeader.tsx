@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button } from '@grafana/ui';
-import { chatHeaderStyles, chatHeaderTitleStyles } from './ChatHeader.styles';
 
 interface ChatHeaderProps {
   clearChat: () => void;
@@ -8,8 +7,8 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ clearChat, isGenerating }) => (
-  <div style={chatHeaderStyles}>
-    <h3 style={chatHeaderTitleStyles}>SQL LLM Copilot Chat</h3>
+  <div className="flex justify-between items-center mb-4">
+    <h3 className="text-lg font-semibold text-gray-800">SQL LLM Copilot Chat</h3>
     <Button variant="secondary" size="sm" onClick={clearChat} disabled={isGenerating}>
       Clear Chat
     </Button>

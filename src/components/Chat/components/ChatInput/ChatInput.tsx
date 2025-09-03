@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Spinner, Stack, TextArea } from '@grafana/ui';
-import { chatInputStyles } from './ChatInput.styles';
 
 interface ChatInputProps {
   currentInput: string;
@@ -26,7 +25,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       onKeyDown={handleKeyPress}
       placeholder="Ask me to list tables, describe schemas, write SQL queries, analyze data, or help with observability... (Enter to send, Shift+Enter for new line)"
       disabled={isGenerating}
-      style={chatInputStyles}
+      className="flex-1 min-h-[72px] resize-vertical border border-gray-300 rounded-md p-2 text-sm"
       rows={3}
     />
     <Button onClick={sendMessage} disabled={!currentInput.trim() || isGenerating || toolsLoading} variant="primary">

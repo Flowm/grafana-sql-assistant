@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ToolCallDisplay } from './ToolCallDisplay';
-import {
-  toolCallsCollapsibleContainerStyles,
-  toolCallsHeaderStyles,
-  toolCallsHeaderHoverStyles,
-  toolCallsContentStyles,
-} from './ToolCallsSection.styles';
 
 interface ToolCallsSectionProps {
   toolCalls: Array<{
@@ -37,15 +31,12 @@ export const ToolCallsSection: React.FC<ToolCallsSectionProps> = ({ toolCalls })
     return null;
   }
 
-  const headerStyle = {
-    ...toolCallsHeaderStyles,
-    ...(isHovered ? toolCallsHeaderHoverStyles : {}),
-  };
-
   return (
-    <div style={toolCallsCollapsibleContainerStyles}>
+    <div className="mb-2 border border-gray-300 rounded-md bg-gray-100">
       <div
-        style={headerStyle}
+        className={`flex justify-between items-center select-none cursor-pointer p-3 bg-gray-200 border-b border-gray-300 text-sm font-bold transition-colors duration-200 rounded-t-md ${
+          isHovered ? 'bg-gray-100' : ''
+        }`}
         onClick={() => setIsExpanded(!isExpanded)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -58,7 +49,7 @@ export const ToolCallsSection: React.FC<ToolCallsSectionProps> = ({ toolCalls })
         <span>{isExpanded ? '▼' : '▶'}</span>
       </div>
       {isExpanded && (
-        <div style={toolCallsContentStyles}>
+        <div className="p-3">
           {toolCalls.map((toolCall, index) => (
             <ToolCallDisplay key={index} toolCall={toolCall} />
           ))}
