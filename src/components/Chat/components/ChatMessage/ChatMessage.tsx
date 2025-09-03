@@ -18,7 +18,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isGenerating 
     return (
       <div className="flex w-full justify-end mb-4">
         <div className="max-w-[70%]">
-          <div className="user-message-bubble px-4 py-3 rounded-2xl rounded-br-md shadow-md">
+          <div className="bg-blue-600 text-white transition-all duration-200 font-medium hover:bg-blue-700 hover:shadow-xl hover:-translate-y-px px-4 py-3 rounded-2xl rounded-br-md shadow-md">
             <div className="text-sm leading-relaxed whitespace-normal break-words font-medium">{message.content}</div>
           </div>
         </div>

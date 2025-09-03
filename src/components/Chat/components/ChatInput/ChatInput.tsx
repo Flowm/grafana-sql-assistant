@@ -45,7 +45,7 @@ export const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(
     };
 
     return (
-      <div className="relative max-w-4xl mx-auto">
+      <div className="relative">
         <div className="border border-medium rounded-xl bg-background px-4 py-3 focus-within:border-primary focus-within:shadow-grafana-sm transition-all duration-200">
           <textarea
             ref={textareaRef}

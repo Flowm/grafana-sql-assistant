@@ -51,20 +51,26 @@ export const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ onSuggestionClic
   return (
     <div className="text-center pt-lg px-md">
       <div className="mb-lg">
-        <div className="suggestions-header">
-          <span className="suggestions-header-icon">⚡</span>
-          <h3 className="suggestions-header-title">Suggestions</h3>
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <span className="text-lg">⚡</span>
+          <h3 className="text-lg font-semibold text-primary">Suggestions</h3>
         </div>
         <p className="text-base text-secondary">
           Click on any suggestion below to get started, or type your own question:
         </p>
       </div>
 
-      <div className="suggestions-grid">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3 max-w-4xl mx-auto md:grid-cols-2">
         {conversationStarters.map((starter, index) => (
-          <button key={index} onClick={() => onSuggestionClick?.(starter.message)} className="suggestion-card">
-            <div className="suggestion-title">{starter.title}</div>
-            <div className="suggestion-subtitle">{starter.subtitle}</div>
+          <button
+            key={index}
+            onClick={() => onSuggestionClick?.(starter.message)}
+            className="bg-background border border-weak rounded-xl p-4 transition-all duration-200 cursor-pointer text-left hover:bg-surface hover:border-medium hover:shadow-[0_2px_8px_rgba(0,0,0,0.1)] hover:-translate-y-px group"
+          >
+            <div className="text-primary text-base font-medium leading-snug mb-1 transition-colors duration-200 group-hover:text-link">
+              {starter.title}
+            </div>
+            <div className="text-secondary text-sm leading-tight">{starter.subtitle}</div>
           </button>
         ))}
       </div>
