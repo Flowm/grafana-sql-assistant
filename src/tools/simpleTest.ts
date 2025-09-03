@@ -1,4 +1,4 @@
-import { postgresMCPClient, isPostgresTool, getPostgresToolNames } from './mcpServer';
+import { postgresMCPClient } from './mcpServer';
 
 /**
  * Simple test that can be run in the browser console
@@ -11,9 +11,9 @@ export async function runSimpleTest(): Promise<void> {
   try {
     // Test 1: Check if tools are properly registered
     console.log('1. Testing tool registration...');
-    const toolsResponse = await postgresMCPClient.listTools();
+    const toolsResponse = postgresMCPClient.listTools();
     const toolNames = toolsResponse.tools.map((t) => t.name);
-    const expectedTools = getPostgresToolNames();
+    const expectedTools = postgresMCPClient.listTools().tools.map((t) => t.name);
 
     const missingTools = expectedTools.filter((tool) => !toolNames.includes(tool));
     if (missingTools.length === 0) {
@@ -26,7 +26,7 @@ export async function runSimpleTest(): Promise<void> {
     console.log('\n2. Testing dynamic tool detection...');
     let allDetected = true;
     for (const toolName of toolNames) {
-      if (!isPostgresTool(toolName)) {
+      if (!postgresMCPClient.isTool(toolName)) {
         console.error(`❌ Tool "${toolName}" not detected as PostgreSQL tool`);
         allDetected = false;
       }
@@ -49,7 +49,7 @@ export async function runSimpleTest(): Promise<void> {
     console.log('\n4. Testing security features...');
     try {
       await postgresMCPClient.callTool({
-        name: 'execute_postgres_query',
+        name: 'sql_execute_query',
         arguments: { query: 'DROP TABLE users;' },
       });
       console.error('❌ Dangerous query was not blocked!');
@@ -65,7 +65,7 @@ export async function runSimpleTest(): Promise<void> {
     console.log('\n5. Testing argument validation...');
     try {
       await postgresMCPClient.callTool({
-        name: 'describe_postgres_table',
+        name: 'sql_describe_table',
         arguments: {}, // Missing required tableName
       });
       console.error('❌ Missing argument validation failed');
@@ -81,7 +81,7 @@ export async function runSimpleTest(): Promise<void> {
     console.log('\n6. Testing error handling...');
     try {
       await postgresMCPClient.callTool({
-        name: 'list_postgres_tables',
+        name: 'sql_list_tables',
         arguments: {},
       });
       console.log('🎉 Database connection successful!');
@@ -112,15 +112,80 @@ export const browserTestHelpers = {
   runAll: runSimpleTest,
 
   // Test individual tools
-  listTables: () => testToolCall('list_postgres_tables'),
+  listTables: async () => {
+    console.group('🔍 Testing tool: sql_list_tables');
+    try {
+      const response = await postgresMCPClient.callTool({
+        name: 'sql_list_tables',
+        arguments: {},
+      });
+      console.log('Response:', response);
+      console.log('✅ Tool call successful');
+    } catch (error) {
+      console.log('❌ Tool call failed:', error instanceof Error ? error.message : error);
+    }
+    console.groupEnd();
+  },
 
-  describeTable: (tableName: string) => testToolCall('describe_postgres_table', { tableName }),
+  describeTable: async (tableName: string) => {
+    console.group(`🔍 Testing tool: sql_describe_table`);
+    try {
+      const response = await postgresMCPClient.callTool({
+        name: 'sql_describe_table',
+        arguments: { tableName },
+      });
+      console.log('Response:', response);
+      console.log('✅ Tool call successful');
+    } catch (error) {
+      console.log('❌ Tool call failed:', error instanceof Error ? error.message : error);
+    }
+    console.groupEnd();
+  },
 
-  queryData: (query: string) => testToolCall('execute_postgres_query', { query }),
+  queryData: async (query: string) => {
+    console.group(`🔍 Testing tool: sql_execute_query`);
+    try {
+      const response = await postgresMCPClient.callTool({
+        name: 'sql_execute_query',
+        arguments: { query },
+      });
+      console.log('Response:', response);
+      console.log('✅ Tool call successful');
+    } catch (error) {
+      console.log('❌ Tool call failed:', error instanceof Error ? error.message : error);
+    }
+    console.groupEnd();
+  },
 
-  countRows: (tableName: string) => testToolCall('get_table_count', { tableName }),
+  countRows: async (tableName: string) => {
+    console.group(`🔍 Testing tool: sql_get_table_row_count`);
+    try {
+      const response = await postgresMCPClient.callTool({
+        name: 'sql_get_table_row_count',
+        arguments: { tableName },
+      });
+      console.log('Response:', response);
+      console.log('✅ Tool call successful');
+    } catch (error) {
+      console.log('❌ Tool call failed:', error instanceof Error ? error.message : error);
+    }
+    console.groupEnd();
+  },
 
-  sampleData: (tableName: string, limit = 10) => testToolCall('get_sample_data', { tableName, limit }),
+  sampleData: async (tableName: string, limit = 10) => {
+    console.group(`🔍 Testing tool: sql_get_sample_data`);
+    try {
+      const response = await postgresMCPClient.callTool({
+        name: 'sql_get_sample_data',
+        arguments: { tableName, limit },
+      });
+      console.log('Response:', response);
+      console.log('✅ Tool call successful');
+    } catch (error) {
+      console.log('❌ Tool call failed:', error instanceof Error ? error.message : error);
+    }
+    console.groupEnd();
+  },
 
   // Show available commands
   help: () => {
@@ -132,7 +197,7 @@ export const browserTestHelpers = {
 - browserTestHelpers.listTables()                // Test list tables
 - browserTestHelpers.describeTable('users')      // Test describe table
 - browserTestHelpers.queryData('SELECT 1;')      // Test query execution
-- browserTestHelpers.countRows('users')          // Test row count
+- browserTestHelpers.countRows('users')          // Test table row count
 - browserTestHelpers.sampleData('users', 5)      // Test sample data
 
 🚀 Quick start:

@@ -5,7 +5,7 @@ import { finalize, lastValueFrom, partition, startWith } from 'rxjs';
 import { llm, mcp } from '@grafana/llm';
 import { CallToolResultSchema } from '@modelcontextprotocol/sdk/types';
 import { RenderedToolCall, ChatMessage } from './types';
-import { postgresMCPClient, isPostgresTool } from '../../tools/mcpServer';
+import { postgresMCPClient } from '../../tools/mcpServer';
 import { browserTestHelpers } from '../../tools/simpleTest';
 
 interface ChatProps {}
@@ -29,7 +29,7 @@ async function handleToolCall(
     let response;
 
     // Check if this is a PostgreSQL tool
-    if (isPostgresTool(f.name)) {
+    if (postgresMCPClient.isTool(f.name)) {
       response = await postgresMCPClient.callTool({ name: f.name, arguments: args });
     } else {
       response = await client.callTool({ name: f.name, arguments: args });
@@ -89,7 +89,7 @@ export function Chat({}: ChatProps) {
 
     // Get tools from both MCP client and PostgreSQL client
     const mcpTools = (await client?.listTools()) ?? { tools: [] };
-    const postgresTools = await postgresMCPClient.listTools();
+    const postgresTools = postgresMCPClient.listTools();
 
     // Combine tools
     const allTools = [...mcpTools.tools, ...postgresTools.tools];
