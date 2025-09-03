@@ -10,6 +10,7 @@ export const useChat = () => {
   const [currentInput, setCurrentInput] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isAutoScroll, setIsAutoScroll] = useState(true);
 
   const {
     toolCalls,
@@ -24,10 +25,22 @@ export const useChat = () => {
   const { handleStreamingChatWithHistory } = useStreamManager(setChatHistory, handleToolCalls, formatToolsForOpenAI);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    const el = chatContainerRef.current;
+    if (el && isAutoScroll) {
+      el.scrollTop = el.scrollHeight;
     }
-  }, [chatHistory]);
+  }, [chatHistory, isAutoScroll]);
+
+  // Handle scroll: pause auto-scroll when user scrolls up; resume when at bottom
+  const handleScroll = () => {
+    const el = chatContainerRef.current;
+    if (!el) {
+      return;
+    }
+    const threshold = 16; // px tolerance from the bottom
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= threshold;
+    setIsAutoScroll(atBottom);
+  };
 
   const sendMessage = async () => {
     if (!currentInput.trim() || isGenerating || !toolsData?.enabled) {
@@ -124,5 +137,8 @@ export const useChat = () => {
     handleKeyPress,
     clearChat,
     getRunningToolCallsCount,
+    isAutoScroll,
+    setIsAutoScroll,
+    handleScroll,
   };
 };

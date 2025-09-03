@@ -17,6 +17,7 @@ export function Chat() {
     sendMessage,
     handleKeyPress,
     clearChat,
+    handleScroll,
   } = useChat();
 
   if (toolsError) {
@@ -30,7 +31,7 @@ export function Chat() {
   return (
     <Stack direction="column" gap={3}>
       <ChatHeader clearChat={clearChat} isGenerating={isGenerating} />
-      <div ref={chatContainerRef} style={chatHistoryContainerStyles}>
+      <div ref={chatContainerRef} style={chatHistoryContainerStyles} onScroll={handleScroll}>
         {chatHistory.length === 0 ? (
           <WelcomeMessage />
         ) : (
