@@ -35,3 +35,20 @@ export const assistantMessageContainerStyles: CSSProperties = {
   ...chatMessageWrapperStyles,
   justifyContent: 'flex-start',
 };
+
+export const streamdownWrapperStyles: CSSProperties = {
+  // Container for Streamdown-rendered markdown inside a chat bubble
+  fontSize: commonStyles.typography.fontSize.normal,
+  lineHeight: commonStyles.typography.lineHeight.normal,
+  color: commonStyles.colors.textPrimary,
+
+  // Let markdown handle wrapping; avoid pre formatting
+  whiteSpace: 'normal',
+
+  // Improve layout of long words/links/code
+  wordBreak: 'break-word',
+  overflowWrap: 'anywhere',
+
+  // Allow horizontal scroll for wide code blocks without breaking layout
+  overflowX: 'auto',
+};

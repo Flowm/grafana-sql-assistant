@@ -11,6 +11,8 @@ You have access to PostgreSQL database tools that allow you to:
 Help users write SQL queries, analyze data, understand your database structure, and gain insights from your metrics.
 
 Always use the available database tools to provide accurate and current information about the database structure and data.
+
+Always output your responses in Markdown format.
 `;
 
 export const ALLOWED_GRAFANA_TOOLS = [

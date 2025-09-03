@@ -1,10 +1,12 @@
 import React from 'react';
+import { Streamdown } from 'streamdown';
 import { ToolCallsSection } from '../ToolCallsSection/ToolCallsSection';
 import { ChatMessage as ChatMessageType } from '../../types';
 import {
   chatMessageWrapperStyles,
   chatMessageStyles,
   thinkingStyles,
+  streamdownWrapperStyles,
 } from './ChatMessage.styles';
 
 interface ChatMessageProps {
@@ -13,11 +15,7 @@ interface ChatMessageProps {
   isLastMessage?: boolean;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = ({
-  message,
-  isGenerating = false,
-  isLastMessage = false,
-}) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isGenerating = false, isLastMessage = false }) => {
   const showThinking = message.role === 'assistant' && isGenerating && isLastMessage && !message.content;
 
   return (
@@ -29,7 +27,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         {showThinking ? (
           <span style={thinkingStyles}>Thinking...</span>
         ) : (
-          message.content
+          <div style={streamdownWrapperStyles}>
+            <Streamdown>{message.content}</Streamdown>
+          </div>
         )}
       </div>
     </div>
