@@ -46,25 +46,6 @@ This plugin should initially be considered a POC and highly experimental, but ha
    - "Create a query to monitor user activity over the last 24 hours"
    - "Help me build a dashboard for system performance metrics"
 
-## Use Cases
-
-- **Monitoring & Observability**: Create queries for system metrics, application performance, and infrastructure monitoring
-- **Data Analysis**: Explore data patterns and trends through conversational queries
-- **Dashboard Creation**: Build comprehensive dashboards with AI-assisted query generation
-- **Query Optimization**: Improve existing queries for better performance
-- **Schema Exploration**: Understand database structure and relationships
-
-## Example Conversations
-
-**User**: "What tables are available in the database?"
-**Assistant**: *Executes schema query and lists all tables with descriptions*
-
-**User**: "Create a query to show CPU usage over time"
-**Assistant**: *Generates optimized time-series query for CPU metrics*
-
-**User**: "Help me build a dashboard panel for error rates"
-**Assistant**: *Creates query and provides dashboard panel configuration*
-
 ## Contributing
 
 Contributions are welcome! Please submit issues, feature requests, or pull requests to help improve SQL Assistant.
