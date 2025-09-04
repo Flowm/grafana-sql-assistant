@@ -3,8 +3,11 @@ import { test, expect } from './fixtures';
 test('should be possible to save app configuration', async ({ appConfigPage, page }) => {
   const saveButton = page.getByRole('button', { name: /Save API settings/i });
 
-  // reset the configured secret
-  await page.getByRole('button', { name: /reset/i }).click();
+  // reset the configured secret if reset button exists
+  const resetButton = page.getByRole('button', { name: /reset/i });
+  if (await resetButton.isVisible()) {
+    await resetButton.click();
+  }
 
   // enter some valid values
   await page.getByRole('textbox', { name: 'API Key' }).fill('secret-api-key');
